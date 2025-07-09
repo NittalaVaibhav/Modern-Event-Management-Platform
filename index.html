@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Horizon - Modern Event Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <h2>Event Horizon</h2>
+    </div>
+
+    <!-- Auth Container -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-background"></div>
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h1>Event Horizon</h1>
+                </div>
+                <p>Discover and manage amazing events</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <h2>Welcome Back</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-user-tag"></i>
+                        <select id="loginRole" required>
+                            <option value="">Select Role</option>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="auth-btn primary">
+                        <span>Sign In</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account? 
+                    <button onclick="switchToSignup()" class="link-btn">Sign up here</button>
+                </p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signupForm" class="auth-form">
+                <h2>Create Account</h2>
+                <form onsubmit="handleSignup(event)">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signupName" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="signupEmail" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="signupPhone" placeholder="Phone Number" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signupPassword" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="auth-btn primary">
+                        <span>Create Account</span>
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account? 
+                    <button onclick="switchToLogin()" class="link-btn">Sign in here</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Event Horizon</span>
+                    </div>
+                    <nav class="main-nav">
+                        <button id="dashboardNav" class="nav-btn active">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </button>
+                        <button id="eventsNav" class="nav-btn">
+                            <i class="fas fa-calendar"></i>
+                            <span>Events</span>
+                        </button>
+                    </nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-menu">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-details">
+                                <span id="userName" class="user-name"></span>
+                                <span id="userRole" class="user-role"></span>
+                            </div>
+                        </div>
+                        <button onclick="logout()" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main id="dashboardContent" class="dashboard-content">
+            <!-- Admin Dashboard -->
+            <div id="adminDashboard" class="dashboard hidden">
+                <div class="dashboard-header">
+                    <h1>Admin Dashboard</h1>
+                    <button onclick="showCreateEventModal()" class="create-event-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>Create Event</span>
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalEvents">0</h3>
+                            <p>Total Events</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalRegistrations">0</h3>
+                            <p>Total Registrations</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="upcomingEvents">0</h3>
+                            <p>Upcoming Events</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="avgRegistrations">0</h3>
+                            <p>Avg. Registrations</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Management -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>Event Management</h2>
+                        <div class="search-filter">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="adminSearchEvents" placeholder="Search events...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="events-table-container">
+                        <table class="events-table">
+                            <thead>
+                                <tr>
+                                    <th>Event</th>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Registrations</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminEventsTable">
+                                <!-- Events will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Dashboard -->
+            <div id="userDashboard" class="dashboard hidden">
+                <div class="dashboard-header">
+                    <h1>Welcome back, <span id="userWelcomeName"></span>!</h1>
+                    <div class="user-stats">
+                        <div class="user-stat">
+                            <span id="userRegisteredCount">0</span>
+                            <p>Events Registered</p>
+                        </div>
+                        <div class="user-stat">
+                            <span id="userUpcomingCount">0</span>
+                            <p>Upcoming Events</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="search-filter-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="userSearchEvents" placeholder="Search events...">
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-category="all">All Events</button>
+                        <button class="filter-btn" data-category="Technology">Technology</button>
+                        <button class="filter-btn" data-category="Business">Business</button>
+                        <button class="filter-btn" data-category="Environment">Environment</button>
+                        <button class="filter-btn" data-category="Education">Education</button>
+                    </div>
+                </div>
+
+                <!-- Featured Events -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i>
+                        Featured Events
+                    </h2>
+                    <div id="featuredEvents" class="events-grid">
+                        <!-- Featured events will be populated here -->
+                    </div>
+                </div>
+
+                <!-- All Events -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        All Events
+                    </h2>
+                    <div id="allEvents" class="events-grid">
+                        <!-- All events will be populated here -->
+                    </div>
+                </div>
+
+                <!-- My Registrations -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <i class="fas fa-ticket-alt"></i>
+                        My Registrations
+                    </h2>
+                    <div id="myRegistrations" class="events-grid">
+                        <!-- User's registered events will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create/Edit Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="eventModalTitle">Create New Event</h2>
+                <button onclick="closeEventModal()" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="eventForm" onsubmit="handleEventSubmit(event)">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Event Title</label>
+                        <input type="text" id="eventTitle" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Category</label>
+                        <select id="eventCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Business">Business</option>
+                            <option value="Environment">Environment</option>
+                            <option value="Education">Education</option>
+                            <option value="Health">Health</option>
+                            <option value="Art">Art & Culture</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Date</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Time</label>
+                        <input type="time" id="eventTime" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Location</label>
+                        <input type="text" id="eventLocation" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Capacity</label>
+                        <input type="number" id="eventCapacity" min="1" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="eventPrice" min="0" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="eventFeatured">
+                            Featured Event
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea id="eventDescription" rows="4" required></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Image URL</label>
+                    <input type="url" id="eventImage" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeEventModal()" class="btn secondary">Cancel</button>
+                    <button type="submit" class="btn primary">
+                        <span id="eventSubmitText">Create Event</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="eventDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="eventDetailsTitle"></h2>
+                <button onclick="closeEventDetailsModal()" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="event-details-content">
+                <div class="event-image-container">
+                    <img id="eventDetailsImage" src="" alt="">
+                </div>
+                <div class="event-info">
+                    <div class="event-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="eventDetailsDate"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="eventDetailsTime"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="eventDetailsLocation"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="eventDetailsCategory"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span id="eventDetailsCapacity"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span id="eventDetailsPrice"></span>
+                        </div>
+                    </div>
+                    <div class="event-description">
+                        <h3>About this event</h3>
+                        <p id="eventDetailsDescription"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" onclick="closeEventDetailsModal()" class="btn secondary">Close</button>
+                <button id="registerEventBtn" type="button" class="btn primary">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Register Now</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i id="notificationIcon" class="notification-icon"></i>
+            <span id="notificationMessage"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
